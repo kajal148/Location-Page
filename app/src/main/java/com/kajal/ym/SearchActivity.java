@@ -33,7 +33,6 @@ public class SearchActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     private DatabaseReference databaseReference;
-    private FirebaseUser firebaseUser;
 
     ArrayList<Places> arrayList = new ArrayList<>();
 
@@ -46,16 +45,17 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mSearchField = (EditText) findViewById(R.id.search_field);
         mSearchBtn = (ImageButton) findViewById(R.id.search_btn);
 
         String searchTerm = getIntent().getStringExtra("searchTerm");
+
         if(!searchTerm.isEmpty()) {
             mSearchField.setText(searchTerm);
             setAdapter(searchTerm);
         }
+
         mRecyclerView = (RecyclerView) findViewById(R.id.result_list);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

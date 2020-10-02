@@ -37,36 +37,33 @@ public class MainActivity extends AppCompatActivity {
     TextView mCountTextView;
     EditText mCountEditText;
 
-    //Spinner days,nights;
+    Spinner spinner_best_months;
+    Spinner spinner_best_seasons;
+
     String[] days ={"1","2","3","4","5","6","7","8","9","10"};
     String[] nights ={"1","2","3","4","5","6","7","8","9","10"};
 
-    RecyclerView gallery,brochure;
-    ImageView mGalleryClick, mBrochureClick;
-    
+    RecyclerView gallery;
+    ImageView mGalleryClick;
+
+    RecyclerView addSearchRecycleView;
+    List<SearchAddClass> mAddSearchList = new ArrayList<>();
+    Button mSearchAddBtn;
+
+    List<Uri> galleryList = new ArrayList<>();
+
     Dialog mDialog;
     EditText mEditField;
     String add_field;
-    List<Uri> galleryList = new ArrayList<>();
-    List<Uri> brochureList = new ArrayList<>();
+    List<AddList> mFeatureList= new ArrayList<>();
+    RecyclerView mFeatureRecyclerView;
+
     private static final int PICK_IMAGE = 100;
     Uri imageUri;
 
-    private List<com.kajal.ym.AddList> mServicesList= new ArrayList<>();
-    RecyclerView mServiceRecyclerView;
-    private List<com.kajal.ym.AddList> mCategoryList= new ArrayList<>();
-    RecyclerView mCategoryRecyclerView;
-
     private EditText mSearchField;
-    private ImageButton mSearchBtn;
-    private RecyclerView mRecyclerView;
-    private DatabaseReference databaseReference;
-    private FirebaseUser firebaseUser;
-    ArrayList<Places> arrayList = new ArrayList<>();
-    SearchAdapter searchAdapter;
 
     public final int GALLERY_SELECTION_REQUEST=5;
-    public final int BROCHURE_SELECTION_REQUEST=6;
 
     Button mSubmit;
 
@@ -75,23 +72,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGalleryClick = findViewById(R.id.icon_gallery);
-        mBrochureClick = findViewById(R.id.icon_brochure);
         mDialog = new Dialog(this);
+        spinner_best_months = findViewById(R.id.spinner_months);
+        spinner_best_seasons = findViewById(R.id.spinner_seasons);
 
-        brochure = findViewById(R.id.brochure);
+        mGalleryClick = findViewById(R.id.icon_gallery);
         gallery = findViewById(R.id.gallery);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         mSearchField = (EditText) findViewById(R.id.search_field);
-        mSearchBtn = (ImageButton) findViewById(R.id.search_btn);
-
-        //getting search place from SEARCHACTIVITY
-        Intent intent = getIntent();
-        final String locationName = intent.getStringExtra("place");
-        mSearchField.setText(locationName);
 
         mCountEditText =  findViewById(R.id.edit_tripSubject);
         mCountTextView = findViewById(R.id.text_tripCounter);
@@ -117,25 +105,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-                    //DAYS AND NIGHTS
-            ArrayAdapter<String> days_adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,days);
-            AutoCompleteTextView days_act =  (AutoCompleteTextView)findViewById(R.id.spinner_days);
-            days_act.setThreshold(1);
-            days_act.setAdapter(days_adapter);
-            days_act.setTextColor(Color.BLACK);
-
-            ArrayAdapter<String> nights_adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,nights);
-            AutoCompleteTextView nights_act =  (AutoCompleteTextView)findViewById(R.id.spinner_nights);
-            nights_act.setThreshold(1);
-            nights_act.setAdapter(nights_adapter);
-            nights_act.setTextColor(Color.BLACK);
-
-            //Search PLACE RECYCLE VIEW LIST
-
-        //mRecyclerView = (RecyclerView) findViewById(R.id.result_list);
-        //mRecyclerView.setHasFixedSize(true);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        //getting search place from SEARCH ACTIVITY
+        Intent intent = getIntent();
+        final String locationName = intent.getStringExtra("place");
+        mSearchField.setText(locationName);
 
         //for search text change
         mSearchField.addTextChangedListener(new TextWatcher() {
@@ -159,25 +132,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-      /*  mSearchField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SearchActivity.class);
-                startActivity(intent);
-            }
-        });*/
 
         //getting search place from SEARCHACTIVITY
-        intent = getIntent();
+        /*intent = getIntent();
         String name = intent.getStringExtra("place");
-        mSearchField.setText(name);
+        mSearchField.setText(name);*/
                                                     // RECYCLE VIEW FOR GALLERY AND BROCHURE
 
         mGalleryClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Intent imgIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 imgIntent.setType("image/* video/*");
                 imgIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -187,80 +151,114 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mBrochureClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent imgIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                imgIntent.setType("image/* video/*");
-                imgIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                imgIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                startActivityForResult(Intent.createChooser(imgIntent,"Select Photo"), BROCHURE_SELECTION_REQUEST);
-            }
-        });
-
-                //use setOrientation(LinearLayoutManager.HORIZONTAL);
-        LinearLayoutManager manager_brochure = new LinearLayoutManager(this);
-        manager_brochure.setOrientation(LinearLayoutManager.HORIZONTAL);
-        brochure.setLayoutManager(manager_brochure);
-
         LinearLayoutManager manager_gallery = new LinearLayoutManager(this);
         manager_gallery.setOrientation(LinearLayoutManager.HORIZONTAL);
         gallery.setLayoutManager(manager_gallery);
 
-        loadImageViewBrochure(brochureList);
         loadImageViewGallery(galleryList);
 
+                // ADD Extra SEARCH BAR
+        addSearchRecycleView = findViewById(R.id.search_add_recycleView);
 
-                        //RECYCLE VIEW FOR ADDITIONAL SERVICES
-        
+        LinearLayoutManager manager_addSearch = new LinearLayoutManager(this);
+        manager_addSearch.setOrientation(LinearLayoutManager.VERTICAL);
+        addSearchRecycleView.setLayoutManager(manager_addSearch);
+        loadAddSearch(mAddSearchList);
 
-        mServiceRecyclerView = findViewById(R.id.services_list);
-
-        mServicesList = new ArrayList<>();
-        mServicesList.add(new AddList("Kajal"));
-
-        //use setOrientation(LinearLayoutManager.HORIZONTAL);
-        LinearLayoutManager manager_services= new LinearLayoutManager(this);
-        manager_services.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mServiceRecyclerView.setLayoutManager(manager_services);
-
-        ListAdapterClass services_adapter = new ListAdapterClass(this,mServicesList);
-        mServiceRecyclerView.setAdapter(services_adapter);
-
-                    //RECYCLEVIEW FOR CATEGORY
-
-        mCategoryRecyclerView = findViewById(R.id.category_list);
-
-        mCategoryList = new ArrayList<>();
-        mCategoryList.add(new AddList("Varma"));
-
-        //use setOrientation(LinearLayoutManager.HORIZONTAL);
-        LinearLayoutManager manager_category= new LinearLayoutManager(this);
-        manager_category.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mCategoryRecyclerView.setLayoutManager(manager_category);
-
-        ListAdapterClass category_adapter = new ListAdapterClass(this,mCategoryList);
-        mCategoryRecyclerView.setAdapter(category_adapter);
-
-        //SUBMIT BUTTON
-
-        mSubmit = findViewById(R.id.btn_submit);
-        mSubmit.setOnClickListener(new View.OnClickListener() {
+        /*mSearchAddBtn = findViewById(R.id.search_add_btn);
+        mSearchAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TravelDetails.class);
-                startActivity(intent);
+                SearchAddClass item = new SearchAddClass();
+                mAddSearchList.add(item);
+                loadAddSearch(mAddSearchList);
+            }
+        });*/
+
+
+                            //FEATURES
+        mFeatureRecyclerView = findViewById(R.id.feature_list);
+
+        LinearLayoutManager manager_feature = new LinearLayoutManager(this);
+        manager_feature.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mFeatureRecyclerView.setLayoutManager(manager_feature);
+        loadFeature(mFeatureList);
+
+        //BEST MONTHS
+        List<String> best_months_list = new ArrayList<String>();
+        best_months_list.add("Jan");
+        best_months_list.add("Feb");
+        best_months_list.add("Mar");
+        best_months_list.add("Apr");
+        best_months_list.add("May");
+        best_months_list.add("Jun");
+        best_months_list.add("Jul");
+        best_months_list.add("Aug");
+        best_months_list.add("Sept");
+        best_months_list.add("Oct");
+        best_months_list.add("Nov");
+        best_months_list.add("Dec");
+
+        ArrayAdapter<String> best_months_Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, best_months_list);
+        best_months_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_best_months.setAdapter(best_months_Adapter);
+
+        spinner_best_months.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String month = parent.getItemAtPosition(position).toString();
+                    //optional later remove it
+                    //Toast.makeText(parent.getContext(),"Selected: " +item, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        
+
+        //BEST SEASONS
+        List<String> best_seasons_list = new ArrayList<String>();
+        best_seasons_list.add("Autumn");
+        best_seasons_list.add("Monsoon");
+        best_seasons_list.add("Pre-Winter");
+        best_seasons_list.add("Spring");
+        best_seasons_list.add("Summer");
+        best_seasons_list.add("Winter");
+
+
+        ArrayAdapter<String> best_seasons_Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, best_seasons_list);
+        best_seasons_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_best_seasons.setAdapter(best_seasons_Adapter);
+
+        spinner_best_seasons.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String season = parent.getItemAtPosition(position).toString();
+                //optional later remove it
+                //Toast.makeText(parent.getContext(),"Selected: " +item, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        //DAYS AND NIGHTS
+        ArrayAdapter<String> days_adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,days);
+        AutoCompleteTextView days_act =  (AutoCompleteTextView)findViewById(R.id.spinner_days);
+        days_act.setThreshold(1);
+        days_act.setAdapter(days_adapter);
+        days_act.setTextColor(Color.BLACK);
+
+        ArrayAdapter<String> nights_adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,nights);
+        AutoCompleteTextView nights_act =  (AutoCompleteTextView)findViewById(R.id.spinner_nights);
+        nights_act.setThreshold(1);
+        nights_act.setAdapter(nights_adapter);
+        nights_act.setTextColor(Color.BLACK);
     }
 
     protected void onActivityResult(int requestcode, int resultcode,
                                     Intent imagereturnintent) {
         super.onActivityResult(requestcode, resultcode, imagereturnintent);
-        switch (requestcode) {
+        switch(requestcode) {
             case GALLERY_SELECTION_REQUEST:
                 if (resultcode == RESULT_OK) {
                     ClipData selectedImages = imagereturnintent.getClipData();
@@ -273,93 +271,22 @@ public class MainActivity extends AppCompatActivity {
                    loadImageViewGallery(galleryList);
                 }
                 break;
-            case BROCHURE_SELECTION_REQUEST:
-                if(resultcode == RESULT_OK) {
-                    ClipData selectedImages = imagereturnintent.getClipData();
-                    if (selectedImages != null) {
-                        for (int count = 0; count < selectedImages.getItemCount(); count++)
-                            brochureList.add(selectedImages.getItemAt(count).getUri());
-                    } else if (imagereturnintent.getData() != null) {
-                            brochureList.add(imagereturnintent.getData());
-                    }
-                    loadImageViewBrochure(brochureList);
-                }
         }
     }
 
-    public void removeImage(int position, List<Uri> imageList, Boolean isBrochure) {
-
-        if(imageList != null){
-            imageList.remove(position);
-        }
-        if(isBrochure) {
-            loadImageViewBrochure(imageList);
-        } else {
-            loadImageViewGallery(imageList);
-        }
+    public void removeImage(int position, List<Uri> imageList) {
+        imageList.remove(position);
+        loadImageViewGallery(imageList);
     }
 
     private void loadImageViewGallery(List<Uri> imageList) {
-        if(imageList != null && imageList.size()>0) {
+        //if(imageList != null && imageList.size()>0) {
             AdapterClass adapter = new AdapterClass(this,imageList, false);
             gallery.setAdapter(adapter);
-          /*  findViewById(R.id.icon_gallery).setVisibility(View.GONE);
-            findViewById(R.id.icon_gallery_aside).setVisibility(View.VISIBLE);*/
-        }
+        //}
     }
 
-    private void loadImageViewBrochure(List<Uri> imageList) {
-        if(imageList != null && imageList.size()>0) {
-            AdapterClass adapter = new AdapterClass(this, imageList, true);
-            brochure.setAdapter(adapter);
-            /*findViewById(R.id.icon_brochure).setVisibility(View.GONE);
-            findViewById(R.id.icon_brochure_aside).setVisibility(View.VISIBLE);*/
-        }
-
-    }
-
-
-
-    /*private void setAdapter(final String searchString) {
-        databaseReference.child("Locations").addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //for every new search
-                arrayList.clear();
-                mRecyclerView.removeAllViews();
-
-                int counter = 0;
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    String name = snapshot.child("name").getValue(String.class);
-                    String link = snapshot.child("link").getValue(String.class);
-                    String description = snapshot.child("description").getValue(String.class);
-                    if (name.startsWith(searchString)){
-                        arrayList.add(new Places(name, link, description));
-                        counter++;
-                    }
-
-                    //for the top 15 results
-                    if (counter  == 15){
-                        break;
-                    }
-
-                }
-
-                searchAdapter = new SearchAdapter(MainActivity.this, arrayList, mSearchField,mRecyclerView);
-                mRecyclerView.setAdapter(searchAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-
-    public void popUpService(View v){
+    public void popUpFeature(View v){
         final Button mButton;
         mDialog.setContentView(R.layout.popup_text);
         mButton = mDialog.findViewById(R.id.btn_submit);
@@ -370,7 +297,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 add_field= mEditField.getText().toString();
                 if(add_field.length()!=0){
-                    mServicesList.add(new AddList(add_field));
+                    mFeatureList.add(new AddList(add_field));
+                    loadFeature(mFeatureList);
                 }
                 //Toast.makeText(getApplicationContext(), add_field, Toast.LENGTH_SHORT).show();
                 mDialog.dismiss();
@@ -379,56 +307,26 @@ public class MainActivity extends AppCompatActivity {
         mDialog.show();
     }
 
-    public void popUpCategory(View v){
-        final Button mButton;
-        mDialog.setContentView(R.layout.popup_text);
-        mButton = mDialog.findViewById(R.id.btn_submit);
-        mEditField= mDialog.findViewById(R.id.edit_services);
-        //mEditField.setText("");
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add_field = mEditField.getText().toString();
-                if(add_field.length()!=0){
-                    mCategoryList.add(new AddList(add_field));
-                }
-                //Toast.makeText(getApplicationContext(), add_field, Toast.LENGTH_SHORT).show();
-                mDialog.dismiss();
-            }
-        });
-        mDialog.show();
+    public void removeFeature(int position, List<AddList> featureList) {
+        featureList.remove(position);
+        loadFeature(featureList);
     }
 
-    public void tripSubjectTip(View v){
-        final ImageView mImageView;
-        final TextView mtextView;
-        mDialog.setContentView(R.layout.tips_popup);
-        mImageView = mDialog.findViewById(R.id.tipButton);
-        mtextView= mDialog.findViewById(R.id.tipText);
-        mtextView.setText("write the subject of the trip");
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
-            }
-        });
-        mDialog.show();
+    private void loadFeature(List<AddList> featureList) {
+        //if(featureList != null && featureList.size()>0) {
+            ListAdapterClass adapter = new ListAdapterClass(this, featureList);
+            mFeatureRecyclerView.setAdapter(adapter);
+        //}
     }
 
-    public void tripDescriptionTip(View v){
-        final ImageView mImageView;
-        final TextView mtextView;
-        mDialog.setContentView(R.layout.tips_popup);
-        mImageView = mDialog.findViewById(R.id.tipButton);
-        mtextView= mDialog.findViewById(R.id.tipText);
-        mtextView.setText("say a few words about your trip");
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
-            }
-        });
-        mDialog.show();
+    private void loadAddSearch(List<SearchAddClass> mAddSearchList) {
+        SearchAddAdapter adapter = new SearchAddAdapter(this, mAddSearchList);
+        addSearchRecycleView.setAdapter(adapter);
     }
 
+    //function to add extra search bar
+    public void addSearchBar(View view) {
+        mAddSearchList.add(new SearchAddClass());
+        loadAddSearch(mAddSearchList);
+    }
 }

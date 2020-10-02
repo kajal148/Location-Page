@@ -55,10 +55,11 @@ public class AdapterClass extends RecyclerView.Adapter<AdapterClass.MyViewHolder
         Glide.with(context)  //2
                 .load(imageList.get(position))
                 .into(holder.mImage);
+
         holder.removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) context).removeImage(position,imageList, isBrochure);
+                ((MainActivity) context).removeImage(position,imageList);
             }
         });
 

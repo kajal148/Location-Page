@@ -15,15 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> {
-    private EditText mSearchFeild;
+    private EditText mSearchField;
     Context context;
     ArrayList<Places> arrayList = new ArrayList<>();
     RecyclerView mrecycleView;
 
-    public SearchAdapter(Context context, ArrayList<Places> arrayList, EditText mSearchFeild,RecyclerView mrecycleView) {
+    public SearchAdapter(Context context, ArrayList<Places> arrayList, EditText mSearchField,RecyclerView mrecycleView) {
         this.context =  context;
         this.arrayList = arrayList;
-        this.mSearchFeild = mSearchFeild;
+        this.mSearchField = mSearchField;
         this.mrecycleView = mrecycleView;
     }
 

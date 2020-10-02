@@ -5,11 +5,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.kajal.ym.R;
 
 import java.util.List;
@@ -17,21 +19,23 @@ import java.util.List;
 public class ListAdapterClass extends RecyclerView.Adapter<ListAdapterClass.MyViewHolder> {
 
     private Context context;
-    private List<com.kajal.ym.AddList> mServices;
+    private List<AddList> mFeaturesList;
 
-    public ListAdapterClass(Context context, List<com.kajal.ym.AddList> mServices) {
+    public ListAdapterClass(Context context, List<AddList> mFeaturesList) {
         this.context = context;
-        this.mServices= mServices;
+        this.mFeaturesList= mFeaturesList;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView mTextView;
+        ImageButton removeFeature;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            mTextView = itemView.findViewById(R.id.service);
+            mTextView = itemView.findViewById(R.id.feature);
+            removeFeature = itemView.findViewById(R.id.removeFeature);
         }
     }
 
@@ -44,17 +48,21 @@ public class ListAdapterClass extends RecyclerView.Adapter<ListAdapterClass.MyVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
-        com.kajal.ym.AddList text = mServices.get(position);
-
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+        AddList text = mFeaturesList.get(position);
         holder.mTextView.setText(text.getService());
 
-
+        holder.removeFeature.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).removeFeature(position,mFeaturesList);
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
-        return mServices.size();
+        return mFeaturesList.size();
     }
 }

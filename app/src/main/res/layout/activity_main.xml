@@ -17,6 +17,38 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:text="Location Page"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:text="Name"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:hint="Location..."
+            android:ems="10"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:inputType="text"
+            android:textColor="#000"
+            android:background="@drawable/edittext_border"/>
+
+
+        <TextView
             android:id="@+id/text_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,7 +56,7 @@
             android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
-            android:text="Place"/>
+            android:text="Nearby Location"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,6 +76,20 @@
                 android:textColor="#000"
                 android:background="@drawable/edittext_border"/>
 
+            <EditText
+                android:id="@+id/search_distance"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="40dp"
+                android:hint="Kms.."
+                android:ems="10"
+                android:padding="5dp"
+                android:inputType="text"
+                android:textColor="#000"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/edittext_border"/>
+
             <ImageButton
                 android:id="@+id/search_btn"
                 android:layout_width="0dp"
@@ -55,52 +101,146 @@
                 android:src="@drawable/ic_baseline_search_24" />
         </LinearLayout>
 
-        <!--<androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/result_list"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_add_recycleView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"></androidx.recyclerview.widget.RecyclerView>-->
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
+
+        <Button
+            android:id="@+id/search_add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/round_button"
+            android:text="ADD +"
+            android:onClick="addSearchBar"
+            android:textColor="#ffffff"/>
 
         <TextView
-            android:id="@+id/text_duration"
+            android:id="@+id/text_features"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
-            android:text="Duration"/>
+            android:text="Features"/>
+
+                    <!-- Check box 1 -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/spinner_days"
+            <CheckBox
+                android:id="@+id/checkBox_city"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:hint="Days.."
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                />
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="City"/>
 
-            <AutoCompleteTextView
-                android:id="@+id/spinner_nights"
+            <CheckBox
+                android:id="@+id/checkBox_family"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:inputType="number"
                 android:layout_weight="1"
-                android:hint="Nights.."
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                />
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Family Trip"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_beach"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Beach"/>
 
         </LinearLayout>
 
+                             <!-- Check box 2 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
+
+            <CheckBox
+                android:id="@+id/checkBox_adventure"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Adventure"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_history"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="History"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_trekking"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Trekking"/>
+
+        </LinearLayout>
+
+                        <!-- Check box 3 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
+
+            <CheckBox
+                android:id="@+id/checkBox_hill"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Hill Place"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_village"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#989898"
+                android:text="Village"/>
+
+            <TextView
+                android:id="@+id/feature_other"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:onClick="popUpFeature"
+                android:textColor="@color/colorAccent"
+                android:text=" Others "/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/feature_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:scrollbars="none"/>
+
+                <!-- CHECK BOX ENDS-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,7 +254,7 @@
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorAccent"
-                android:text="Trip Subject"/>
+                android:text="About"/>
 
             <TextView
                 android:id="@+id/text_tripCounter"
@@ -127,18 +267,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/text_tripSubject"
                  />
-
-            <ImageButton
-                android:id="@+id/tripSubject_tips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_info_24"
-                android:background="#fff"
-                android:onClick="tripSubjectTip"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"/>
-
 
         </RelativeLayout>
 
@@ -156,52 +284,7 @@
             android:maxLines="7"
             android:minLines="4"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/text_tripDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"
-                android:text="Trip Description"/>
-
-            <ImageButton
-                android:id="@+id/tripDescription_tips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_info_24"
-                android:background="#fff"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="tripDescriptionTip"
-                android:layout_alignParentRight="true"/>
-
-
-        </RelativeLayout>
-
-        <EditText
-            android:id="@+id/edit_tripDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:lines="8"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/edittext_border"
-            android:maxLines="7"
-            android:minLines="4"
-            android:maxLength="150"
-            android:scrollbars="vertical"/>
-
-
                          <!-- BROCHURE AND GALLERY -->
-
-        <!-- ADDITIONAL SERVICES -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -209,52 +292,7 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/text_brochure"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brochure"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/icon_brochure_aside"
-                    android:layout_width="wrap_content"
-                    android:layout_height="14dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="2dp"
-                    android:layout_marginLeft="3dp"
-                    android:background="@drawable/add_icon" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/icon_brochure"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#f1f1f1"
-                    android:src="@drawable/add_icon" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/brochure"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none" />
-
-            </LinearLayout>
+            <!---GALLERY STARTS -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -305,92 +343,106 @@
 
         </LinearLayout>
 
+             <!-- LAST BOX STARTS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:id="@+id/text_additonal"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"
-                android:text="Additional Services"/>
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/additional_addicon"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="2dp"
-                android:layout_marginLeft="3dp"
-                android:onClick="popUpService"
-                android:background="@drawable/add_icon_color" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Best Months"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorAccent"/>
 
-        </LinearLayout>
+                <Spinner
+                    android:id="@+id/spinner_months"
+                    android:layout_width="140dp"
+                    android:layout_height="40dp"
+                    android:hint=""
+                    android:padding="5dp"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="10dp"/>
+            </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/services_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"/>
-
-                            <!-- CATEGORY -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:id="@+id/text_catergory"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"
-                android:text="Category"/>
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/category_addicon"
-                android:layout_width="24dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Best Season "
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"/>
+
+                <Spinner
+                    android:id="@+id/spinner_seasons"
+                    android:layout_width="140dp"
+                    android:layout_height="40dp"
+                    android:hint=""
+                    android:padding="5dp"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="2dp"
-                android:layout_marginLeft="3dp"
-                android:onClick="popUpCategory"
-                android:background="@drawable/add_icon_color" />
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   Ideal Stay   "
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorAccent"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="horizontal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spinner_days"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:hint="Days.."
+                        android:textSize="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spinner_nights"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:inputType="number"
+                        android:layout_weight="1"
+                        android:hint="Nights.."
+                        android:textSize="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/category_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"/>
-
-        <!-- SUBMIT BUTTON -->
-
-        <Button
-            android:id="@+id/btn_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT"
-            android:textAllCaps="false"
-            android:layout_margin="10dp"
-            android:textColor="#fff"
-            android:letterSpacing="0.3"
-            android:background="@drawable/button_pressed"
-            />
-
+            <!-- LAST BOX ENDS -->
 
     </LinearLayout>
-
-
-
-
 </ScrollView>
